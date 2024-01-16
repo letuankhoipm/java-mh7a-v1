@@ -1,5 +1,34 @@
 package com.restapi.controllers.users;
 
-public class UserController {
+import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.restapi.models.users.User;
+import com.restapi.services.users.UserService;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<String> createUser(@RequestBody User user) {
+        userService.saveUser(user);
+        return ResponseEntity.ok("User created successfully");
+    }
 }
