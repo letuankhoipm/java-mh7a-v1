@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.restapi.exceptions.EmailAlreadyTakenException;
 import com.restapi.models.users.User;
 import com.restapi.repositories.UserRepository;
 
@@ -24,9 +25,25 @@ public class UserService {
     public void saveUser(@NonNull User user) {
         User existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser != null) {
-            throw new IllegalStateException("Email already taken");
-            
+            throw new EmailAlreadyTakenException("Email already taken");
         }
         userRepository.save(user);
+    }
+
+    public void updateUser(@NonNull User user, long id) {
+        User existingUser = userRepository.findById(id);
+        if (existingUser == null) {
+            throw new RuntimeException("User not found");
+        }
+        existingUser.setName(user.getName());
+        userRepository.save(existingUser);
+    }
+
+    public void deleteUser(@NonNull long id) {
+        User existingUser = userRepository.findById(id);
+        if (existingUser == null) {
+            throw new RuntimeException("User not found");
+        }
+        userRepository.deleteById(id);
     }
 }
